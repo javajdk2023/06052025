@@ -22,54 +22,49 @@ O projeto já contém:
 
 Implemente os seguintes métodos na classe `LivroDAO`:
 
-### 1. `public List<Livro> listarTodos() throws SQLException`
-
-- Deve retornar uma lista com todos os livros cadastrados.
-- Utilize `SELECT * FROM livro`.
-
-### 2. `public Livro buscarPorId(Integer id) throws SQLException`
-
-- Deve retornar um único livro com base no `codigo` informado.
-- Utilize `SELECT * FROM livro WHERE codigo = ?`.
-
-### 3. `public void atualizar(Livro livro) throws SQLException`
+### 1. `public void atualizar(Livro livro) throws SQLException`
 
 - Deve atualizar os dados de um livro já existente no banco.
 - Utilize `UPDATE livro SET titulo=?, autor=?, sinopse=?, isbn=?, ano_lancamento=? WHERE codigo=?`.
 
-### 4. `public void deletar(Integer id) throws SQLException`
+### 2. `public void deletar(Integer id) throws SQLException`
 
 - Deve remover um livro com base no `codigo`.
 - Utilize `DELETE FROM livro WHERE codigo = ?`.
 
 ---
 
-## 🧪 Dica de Teste
+# 📝 Atividade 2: Criar Menu
 
-Crie uma classe `Main` com exemplos para testar as funcionalidades implementadas. Exemplo:
+Crie uma classe `LivroView`, utilize o Scanner e System.out para exibir as seguintes opções:
+
+o Menu deve ter as seguintes opções:
+
+- 1 - Gerenciar Livros
+- 2 - Gerenciar Categorias
+- 3 - Sair
+
+Caso o cliente escolha a opção 1, exiba as seguintes opções:
+
+- Cadastrar Livro
+- Excluir Livro
+- Atualizar dados do Livro
+- Voltar
+
+# 🧪 Atividade 3: Classe Aplicação
+
+A classe aplicação deve ter apenas o método `main()`. O método `main` invocar o método `exibirMenu()` da classe LivroView. 
 
 ```java
-public class Main {
-    public static void main(String[] args) throws Exception {
-        LivroDAO dao = new LivroDAO();
+package br.com.fuctura;
 
-        // Teste de inserção
-        Livro novoLivro = new Livro(null, "Dom Casmurro", "Machado de Assis", "Romance brasileiro", "123456789", Date.valueOf("1899-01-01"));
-        dao.salvar(novoLivro);
+public class Aplicacao {
 
-        // Teste de listagem
-        for (Livro l : dao.listarTodos()) {
-            System.out.println(l.getTitulo());
-        }
+	public static void main(String[] args) {
+		LivroView livroView = new LivroView();
+		livroView.exibirMenu();
+		
+	}
 
-        // Teste de busca por ID
-        Livro livro = dao.buscarPorId(novoLivro.getCodigo());
-
-        // Teste de atualização
-        livro.setTitulo("Dom Casmurro (Edição Revisada)");
-        dao.atualizar(livro);
-
-        // Teste de remoção
-        dao.deletar(livro.getCodigo());
-    }
 }
+```

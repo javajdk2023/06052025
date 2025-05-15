@@ -1,156 +1,75 @@
-# 06052025
-Repositório da Turma de Java 2
+# 📝 Atividade 1: Finalização do CRUD com JDBC - LivroDAO
 
-# 📚 Sistema de Gestão de Biblioteca
+## 🎯 Objetivo
 
-Você foi designado para desenvolver um sistema de gerenciamento de biblioteca. O sistema deve permitir o **cadastro** e **consulta** de livros e categorias, com as seguintes especificações:
+Completar a implementação do CRUD (Create, Read, Update, Delete) utilizando JDBC na classe `LivroDAO`.
 
----
-
-## ✅ Requisitos do Sistema
-
-### 📘 Livros
-
-Cada livro deve conter as seguintes informações:
-
-- Título  
-- Autor  
-- Sinopse  
-- ISBN (único)  
-- Ano de lançamento (deve ser **maior ou igual a 1967**)  
-- Associação com uma **categoria**
-
-### 🗂️ Categorias
-
-Cada categoria deve conter:
-
-- Nome único  
-- Descrição  
-
-> Uma categoria pode conter **múltiplos livros**.
+Atualmente, a classe `LivroDAO` implementa apenas o método `salvar`, responsável por inserir um novo livro no banco de dados. Sua tarefa é **implementar os métodos restantes do CRUD**.
 
 ---
 
-## 🛠️ Tarefas a Serem Realizadas
+## 📁 Estrutura Atual
 
-### 1. Configuração do Banco de Dados
+O projeto já contém:
 
-- Criar a estrutura necessária no banco de dados para armazenar livros e categorias.
-
-### 2. Conexão com o Banco de Dados
-
-- Configurar a conexão para que o sistema possa interagir com as entidades `Livro` e `Categoria`.
-
-### 3. Classes Utilitárias
-
-- Criar classes para gerenciar a persistência de dados, incluindo métodos para abrir e fechar conexões com o banco.
-
-### 4. Interfaces de Acesso a Dados (DAO)
-
-- Criar interfaces e classes para o acesso aos dados de livros e categorias.
-- Implementar operações básicas de **consulta** e **persistência**.
-
-### 5. Classes de Serviço
-
-- Implementar regras de negócio.
-- Criar métodos para realizar operações **CRUD** nas entidades de livros e categorias.
+- A classe `LivroDAO` com o método `salvar()`.
+- A entidade `Livro`.
+- A classe `JDBCUtils` que fornece a conexão com o banco de dados.
 
 ---
 
-## 🔄 Regras de Negócio e Funcionalidades CRUD
+## ✅ Tarefas
 
-### 📘 Livro
+Implemente os seguintes métodos na classe `LivroDAO`:
 
-- **Salvar Livro**  
-  Cadastrar um novo livro no banco de dados.
+### 1. `public List<Livro> listarTodos() throws SQLException`
 
-- **Localizar Livro por ID**  
-  Buscar um livro pelo seu identificador único.
+- Deve retornar uma lista com todos os livros cadastrados.
+- Utilize `SELECT * FROM livro`.
 
-- **Listar Livros**  
-  Exibir todos os livros cadastrados.
+### 2. `public Livro buscarPorId(Integer id) throws SQLException`
 
-- **Listar Livros por Autor**  
-  Exibir todos os livros de um autor específico.
+- Deve retornar um único livro com base no `codigo` informado.
+- Utilize `SELECT * FROM livro WHERE codigo = ?`.
 
-- **Listar Livros por Categoria**  
-  Exibir todos os livros pertencentes a uma determinada categoria.
+### 3. `public void atualizar(Livro livro) throws SQLException`
 
-- **Atualizar Livro**  
-  Atualizar informações de um livro já cadastrado.
+- Deve atualizar os dados de um livro já existente no banco.
+- Utilize `UPDATE livro SET titulo=?, autor=?, sinopse=?, isbn=?, ano_lancamento=? WHERE codigo=?`.
 
-- **Remover Livro**  
-  Excluir um livro do banco de dados.
+### 4. `public void deletar(Integer id) throws SQLException`
 
----
-
-### 🗂️ Categoria
-
-- **Salvar Categoria**  
-  Cadastrar uma nova categoria no banco de dados.
-
-- **Localizar Categoria por ID**  
-  Buscar uma categoria pelo seu identificador único.
-
-- **Listar Categorias**  
-  Exibir todas as categorias cadastradas.
-
-- **Exibir Categoria com Maior Quantidade de Livros**  
-  Mostrar a categoria com o maior número de livros associados.
-
-- **Atualizar Categoria**  
-  Atualizar informações de uma categoria já existente.
-
-- **Remover Categoria**  
-  Excluir uma categoria **somente se não houver livros associados**.
+- Deve remover um livro com base no `codigo`.
+- Utilize `DELETE FROM livro WHERE codigo = ?`.
 
 ---
 
-## ⚠️ Observações Importantes
+## 🧪 Dica de Teste
 
-- As **classes de serviço** devem conter as regras de negócio e validações, como:
+Crie uma classe `Main` com exemplos para testar as funcionalidades implementadas. Exemplo:
 
-  - Uma categoria **só pode ser removida** se **não houver livros** vinculados a ela.
-  - O **ano de lançamento** do livro deve ser **≥ 1967**.
-  - O **ISBN** deve ser **único** no sistema.
+```java
+public class Main {
+    public static void main(String[] args) throws Exception {
+        LivroDAO dao = new LivroDAO();
 
-- As operações **CRUD** devem ser completamente implementadas para ambas as entidades: `Livro` e `Categoria`.
+        // Teste de inserção
+        Livro novoLivro = new Livro(null, "Dom Casmurro", "Machado de Assis", "Romance brasileiro", "123456789", Date.valueOf("1899-01-01"));
+        dao.salvar(novoLivro);
 
-- Certifique-se de que **todas as regras de negócio estão funcionando corretamente**, especialmente durante **adição** ou **remoção** de registros.
+        // Teste de listagem
+        for (Livro l : dao.listarTodos()) {
+            System.out.println(l.getTitulo());
+        }
 
----
+        // Teste de busca por ID
+        Livro livro = dao.buscarPorId(novoLivro.getCodigo());
 
-## 📝 Arquivo de Comandos SQL
+        // Teste de atualização
+        livro.setTitulo("Dom Casmurro (Edição Revisada)");
+        dao.atualizar(livro);
 
-Crie um arquivo `.txt` contendo os comandos SQL utilizados, incluindo:
-
-- Criação das tabelas (`CREATE TABLE`)
-- Comandos SQL para:
-  - Inserção (`INSERT`)
-  - Consulta (`SELECT`)
-  - Atualização (`UPDATE`)
-  - Remoção (`DELETE`)
-  
-> O arquivo deve estar bem organizado, com os comandos separados por entidade (`Livro`, `Categoria`) e operação (CRUD).
-
----
-
-## 📌 Apontamentos
-
-- **Organização do Código**  
-  Estrutura clara e bem definida, com separação entre camadas (`DAO`, `Serviço`, etc.).
-
-- **Conexão com o Banco**  
-  A configuração da conexão deve estar correta e funcional.
-
-- **Regras de Negócio**  
-  Devem ser implementadas de forma completa e eficiente.
-
-- **Comentários no Código**  
-  Adicione comentários que expliquem claramente:
-  - A lógica de cada método
-  - As validações realizadas
-  - As etapas principais do fluxo de dados
-
-- **Arquivo de SQL**  
-  O `.txt` com comandos SQL deve estar completo e organizado de maneira compreensível.
+        // Teste de remoção
+        dao.deletar(livro.getCodigo());
+    }
+}

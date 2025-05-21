@@ -6,7 +6,7 @@ import br.com.libraryjdbc.dao.BookDao;
 import br.com.libraryjdbc.dao.CategoryDao;
 import db.DB;
 
-public class Application {
+public class Program {
 
     public static void main(String[] args) {
         try {

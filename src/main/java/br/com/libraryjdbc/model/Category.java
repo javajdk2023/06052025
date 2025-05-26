@@ -20,16 +20,16 @@ public class Category {
      */
     public Category(Long id, String name, String description) {
         this.id = id;
-        this.name = name;
-        this.description = description;
+        setName(name);
+        setDescription(description);
     }
 
     /**
      * Constructor without ID (for new category insertion)
      */
     public Category(String name, String description) {
-        this.name = name;
-        this.description = description;
+        setName(name);
+        setDescription(description);
     }
 
     // Getters and Setters
@@ -46,6 +46,9 @@ public class Category {
     }
 
     public void setName(String name) {
+        if (name != null && name.trim().isEmpty()) {
+            name = null; // Normalize empty strings to null
+        }
         this.name = name;
     }
 
@@ -54,7 +57,18 @@ public class Category {
     }
 
     public void setDescription(String description) {
+        if (description != null && description.trim().isEmpty()) {
+            description = null; // Normalize empty strings to null
+        }
         this.description = description;
+    }
+
+    /**
+     * Checks if category has valid name and description
+     */
+    public boolean isValid() {
+        return name != null && !name.trim().isEmpty()
+                && description != null && !description.trim().isEmpty();
     }
 
     @Override
@@ -75,8 +89,7 @@ public class Category {
             return false;
         Category other = (Category) obj;
         if (id == null) {
-            if (other.id != null)
-                return false;
+            return other.id == null;
         } else if (!id.equals(other.id))
             return false;
         return true;
@@ -84,6 +97,11 @@ public class Category {
 
     @Override
     public String toString() {
-        return "Category [id=" + id + ", name=" + name + ", description=" + description + "]";
+        return String.format("Category{id=%d, name='%s', description='%s'%s}",
+                id,
+                name != null ? name : "null",
+                description != null ? (description.length() > 50 ? description.substring(0, 47) + "..." : description) : "null",
+                isValid() ? "" : " [INVALID]"
+        );
     }
 }

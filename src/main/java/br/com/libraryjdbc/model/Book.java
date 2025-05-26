@@ -24,24 +24,24 @@ public class Book {
      */
     public Book(Long id, String title, String author, String synopsis, String isbn, Integer releaseYear, Category category) {
         this.id = id;
-        this.title = title;
-        this.author = author;
-        this.synopsis = synopsis;
-        this.isbn = isbn;
-        this.releaseYear = releaseYear;
-        this.category = category;
+        setTitle(title);
+        setAuthor(author);
+        setSynopsis(synopsis);
+        setIsbn(isbn);
+        setReleaseYear(releaseYear);
+        setCategory(category);
     }
 
     /**
      * Constructor without ID (for new book insertion)
      */
     public Book(String title, String author, String synopsis, String isbn, Integer releaseYear, Category category) {
-        this.title = title;
-        this.author = author;
-        this.synopsis = synopsis;
-        this.isbn = isbn;
-        this.releaseYear = releaseYear;
-        this.category = category;
+        setTitle(title);
+        setAuthor(author);
+        setSynopsis(synopsis);
+        setIsbn(isbn);
+        setReleaseYear(releaseYear);
+        setCategory(category);
     }
 
     // Getters and Setters
@@ -58,6 +58,9 @@ public class Book {
     }
 
     public void setTitle(String title) {
+        if (title != null && title.trim().isEmpty()) {
+            title = null; // Normalize empty strings to null
+        }
         this.title = title;
     }
 
@@ -66,6 +69,9 @@ public class Book {
     }
 
     public void setAuthor(String author) {
+        if (author != null && author.trim().isEmpty()) {
+            author = null; // Normalize empty strings to null
+        }
         this.author = author;
     }
 
@@ -74,6 +80,9 @@ public class Book {
     }
 
     public void setSynopsis(String synopsis) {
+        if (synopsis != null && synopsis.trim().isEmpty()) {
+            synopsis = null; // Normalize empty strings to null
+        }
         this.synopsis = synopsis;
     }
 
@@ -82,6 +91,9 @@ public class Book {
     }
 
     public void setIsbn(String isbn) {
+        if (isbn != null && isbn.trim().isEmpty()) {
+            isbn = null; // Normalize empty strings to null
+        }
         this.isbn = isbn;
     }
 
@@ -99,6 +111,24 @@ public class Book {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    /**
+     * Checks if book has all required fields
+     */
+    public boolean isValid() {
+        return title != null && !title.trim().isEmpty()
+                && author != null && !author.trim().isEmpty()
+                && isbn != null && !isbn.trim().isEmpty()
+                && releaseYear != null
+                && category != null;
+    }
+
+    /**
+     * Gets category name safely
+     */
+    public String getCategoryName() {
+        return category != null ? category.getName() : null;
     }
 
     @Override
@@ -119,17 +149,20 @@ public class Book {
             return false;
         Book other = (Book) obj;
         if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        return true;
+            return other.id == null;
+        } else return id.equals(other.id);
     }
 
     @Override
     public String toString() {
-        return "Book [id=" + id + ", title=" + title + ", author=" + author +
-                ", synopsis=" + synopsis + ", isbn=" + isbn + ", releaseYear=" + releaseYear +
-                ", category=" + (category != null ? category.getName() : "null") + "]";
+        return String.format("Book{id=%d, title='%s', author='%s', isbn='%s', year=%d, category='%s'%s}",
+                id,
+                title != null ? title : "null",
+                author != null ? author : "null",
+                isbn != null ? isbn : "null",
+                releaseYear != null ? releaseYear : 0,
+                getCategoryName() != null ? getCategoryName() : "null",
+                isValid() ? "" : " [INVALID]"
+        );
     }
 }
